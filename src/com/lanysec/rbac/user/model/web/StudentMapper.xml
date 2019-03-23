@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanysec.rbac.user.dao.web.StudentDao">
+   <resultMap type="com.lanysec.rbac.user.model.web.Student" id="BaseResultMap">
+        <result property="studentId" column="stu_id" jdbcType="VARCHAR"/>
+        <result property="studentScore" column="course_score" jdbcType="INTEGER"/>
+        <result property="courseId" column="course_id" jdbcType="INTEGER"/>
+        <result property="studentName" column="stu_name" jdbcType="VARCHAR"/>
+    </resultMap>
+   <resultMap type="com.lanysec.rbac.user.model.web.SchoolCourse" id="BaseResultMap2">
+        <result property="stu_id" column="stu_id" jdbcType="VARCHAR"/>
+        <result property="car_id" column="car_id" jdbcType="VARCHAR"/>
+          <result property="tea_id" column="tea_id" jdbcType="VARCHAR"/>
+          <result property="course_time" column="course_time" jdbcType="VARCHAR"/>
+          <result property="course_name" column="course_name" jdbcType="VARCHAR"/>
+  </resultMap>
+    
+    <sql id="stu_score_columns">
+        stu_id,course_id,course_score,stu_name
+    </sql>
+     <resultMap type="com.lanysec.rbac.user.model.web.Student" id="SelectResultMap" extends="BaseResultMap">
+        <!-- 关联对象 -->
+        <association property="course" javaType="com.lanysec.rbac.user.model.web.Course"
+        column="course_id"
+        select="com.lanysec.rbac.user.dao.web.CourseDao.getCourseInfoById"
+        ></association>
+    </resultMap>
+    
+         <resultMap type="com.lanysec.rbac.user.model.web.SchoolCourse" id="SelectResultMap2" extends="BaseResultMap2">
+        <!-- 关联对象 -->
+        <association property="teacher" javaType="com.lanysec.rbac.user.model.web.Course"
+        column="tea_id"
+        select="com.lanysec.rbac.user.dao.web.TeacherDao.getTeaInfoByTeaId"
+        ></association>
+    </resultMap>
+         <resultMap type="com.lanysec.rbac.user.model.web.Student" id="SelectResultMap3" extends="BaseResultMap">
+        <!-- 关联对象 -->
+        <association property="user" javaType="com.lanysec.rbac.user.model.web.User"
+        column="stu_id"
+        select="com.lanysec.rbac.user.dao.web.UserDao.getUserInfoById"
+        ></association>
+    </resultMap>
+    <select id="getStuScore" resultMap="SelectResultMap">
+      SELECT
+         <include refid="stu_score_columns"/>
+     FROM  
+         stu_score
+     WHERE 
+           stu_id=#{account}   
+    </select>
+    <update id="updateScoreInfo" >
+        UPDATE 
+            stu_score
+        SET  
+            course_score=#{student.studentScore}
+        WHERE
+           stu_id=#{student.studentId} 
+           AND
+           course_id=#{student.courseId}
+    </update>
+    <delete id="deleteStuScoreInfo">
+    DELETE FROM
+        stu_score
+    WHERE 
+        stu_id=#{studentId} 
+    AND
+        course_id=#{courseId}
+    </delete>
+    <insert id="insertStuScore">
+      INSERT INTO 
+             stu_score
+        (stu_id,course_id,course_score) 
+      VALUES
+         (#{student.studentId},#{student.courseId},#{student.studentScore})    
+    </insert>
+    <select id="getStuInfoById" resultMap="BaseResultMap">
+      SELECT
+      *
+     FROM  
+         stu_score
+     WHERE 
+           stu_id=#{stu_id}   
+     LIMIT 0,1
+     
+    </select>
+    <select id="getStuCourseInfoById" resultMap="SelectResultMap2">
+      SELECT
+      *
+      FROM  
+         courseinfo
+      WHERE 
+           stu_id=#{stu_id}   
+     
+    </select>
+    <select id="getStudentInfoList" resultMap="BaseResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      stu_score
+   Limit #{startNum},#{Page}
+  
+  </select>
+    <select id="getStudentList" resultMap="SelectResultMap3">
+    SELECT
+         *
+    FROM
+        stu_info    
+    LIMIT
+        #{startNum},#{Page}
+    </select>
+<select id="getStudentCount" resultType="INTEGER">
+
+SELECT
+    COUNT(*)
+FROM
+    stu_info
+</select>
+<insert id="addStudent">
+   INSERT INTO 
+        stu_info
+    (stu_id,stu_name)
+   VALUES
+     (#{student.studentId},#{student.studentName})
+</insert>
+
+<delete id="deleteStuById" >
+  DELETE FROM 
+          stu_info
+  WHERE
+      stu_id=#{stu_id}
+</delete>
+<select id="getSignalStudent" resultMap="SelectResultMap3">
+SELECT 
+      * 
+FROM 
+     stu_info
+WHERE
+      stu_id=#{account}
+
+</select>
+
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanysec.rbac.user.dao.web.CourseDao">
+   <resultMap type="com.lanysec.rbac.user.model.web.Course" id="BaseResultMap">
+        <result property="stu_id" column="stu_id" jdbcType="VARCHAR"/>
+        <result property="car_id" column="car_id" jdbcType="VARCHAR"/>
+          <result property="tea_id" column="tea_id" jdbcType="VARCHAR"/>
+          <result property="course_time" column="course_time" jdbcType="VARCHAR"/>
+          <result property="courseName" column="course_name" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <select id="getCourseInfoById" resultMap="BaseResultMap">
+  
+  SELECT 
+       *
+  FROM 
+      course_table
+  WHERE 
+      course_id=#{courseId}
+  </select>
+</mapper>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanysec.rbac.user.dao.web.SchoolCourseDao">
+   <resultMap type="com.lanysec.rbac.user.model.web.SchoolCourse" id="BaseResultMap">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="stu_id" column="stu_id" jdbcType="VARCHAR"/>
+        <result property="course_time" column="course_time" jdbcType="VARCHAR"/>
+        <result property="course_name" column="course_name" jdbcType="VARCHAR"/>
+        <result property="tea_id" column="tea_id" jdbcType="VARCHAR"/>
+        <result property="endTime" column="endTime" jdbcType="VARCHAR"/>
+        
+  </resultMap>
+     <resultMap type="com.lanysec.rbac.user.model.web.SchoolCourse" id="SelectResultMap" extends="BaseResultMap">
+        <!-- 关联对象 -->
+        <association property="teacher" javaType="com.lanysec.rbac.user.model.web.Teacher"
+        column="tea_id"
+        select="com.lanysec.rbac.user.dao.web.TeacherDao.getTeaInfoByTeaId"
+        ></association>
+    </resultMap>
+     <resultMap type="com.lanysec.rbac.user.model.web.SchoolCourse" id="SelectResultMap1" extends="BaseResultMap">
+        <!-- 关联对象 -->
+        <association property="student" javaType="com.lanysec.rbac.user.model.web.Student"
+        column="stu_id"
+        select="com.lanysec.rbac.user.dao.web.StudentDao.getStuInfoById"
+        ></association>
+    </resultMap>
+     <resultMap type="com.lanysec.rbac.user.model.web.SchoolCourse" id="SelectResultMap2" extends="BaseResultMap">
+        <association property="teacher" javaType="com.lanysec.rbac.user.model.web.Teacher"
+        column="tea_id"
+        select="com.lanysec.rbac.user.dao.web.TeacherDao.getTeaInfoByTeaId"
+        ></association>
+        <!-- 关联对象 -->
+        <association property="student" javaType="com.lanysec.rbac.user.model.web.Student"
+        column="stu_id"
+        select="com.lanysec.rbac.user.dao.web.StudentDao.getStuInfoById"
+        ></association>
+    </resultMap>
+      <select id="getCourseByCarId" resultMap="SelectResultMap1">
+  
+  SELECT 
+       *
+  FROM 
+      courseinfo
+  WHERE 
+      tea_id=#{tea_id}
+  </select>
+  <select id="getCourseInfoByTeaId" resultMap="SelectResultMap1">
+  
+  SELECT 
+       *
+  FROM 
+      courseinfo
+  WHERE 
+      tea_id=#{tea_id}
+  </select>
+    <select id="getCourseInfoByStuId" resultMap="SelectResultMap">
+  
+  SELECT 
+       *
+  FROM 
+      courseinfo
+  WHERE 
+      stu_id=#{stu_id}
+  </select>
+      <select id="getAssmetTeacherByStuId" resultMap="SelectResultMap">
+        SELECT DISTINCT
+        	tea_id
+        FROM
+        	courseinfo
+        WHERE 
+              stu_id=#{stu_id}
+  </select>
+  <select id="getSchoolCourseList"  resultMap="SelectResultMap2">
+  SELECT 
+        *
+  FROM
+      courseinfo
+  LIMIT
+       #{startNum},#{Page}
+  
+  
+  
+  
+  </select>
+  <select id="getCourseCount" resultType="INTEGER">
+  SELECT 
+         count(*)
+  FROM
+        courseinfo
+  
+  </select>
+  <select id="getSignalSchoolCourseById" resultMap="SelectResultMap2">
+   SELECT 
+        *
+  FROM
+      courseinfo
+  WHERE 
+      id=#{keywords}
+  </select>
+  <insert id="addSchoolCourse">
+  INSERT INTO 
+            courseinfo
+  (stu_id,tea_id,course_time,course_name,endTime)
+   VALUES
+  (#{schoolCourse.stu_id},#{schoolCourse.tea_id},#{schoolCourse.course_time},#{schoolCourse.course_name},#{schoolCourse.endTime})
+  </insert>
+  <delete id="deleteCourseByKeywords">
+  
+  DELETE FROM 
+         courseinfo
+  WHERE 
+         id=#{keywords}
+  
+  
+  </delete>
+  <update id="updateSchoolCourseById">
+  UPDATE 
+      courseinfo
+  SET
+      stu_id=#{schoolCourse.stu_id}, 
+      tea_id=#{schoolCourse.tea_id},
+      course_time=#{schoolCourse.course_time},
+      course_name=#{schoolCourse.course_name},
+      endTime=#{schoolCourse.endTime}
+  WHERE 
+       id=#{schoolCourse.id}
+  </update>
+</mapper>

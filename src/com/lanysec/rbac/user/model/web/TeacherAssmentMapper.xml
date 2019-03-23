@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanysec.rbac.user.dao.web.TeacherAssmentDao">
+   <resultMap type="com.lanysec.rbac.user.model.web.TeacherAssment" id="BaseResultMap">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="tea_id" column="tea_id" jdbcType="VARCHAR"/>
+        <result property="stu_id" column="stu_id" jdbcType="VARCHAR"/>
+        <result property="assment" column="assment" jdbcType="VARCHAR"/>
+        <result property="assment_status" column="assment_status" jdbcType="VARCHAR"/>
+        
+  </resultMap>
+     <resultMap type="com.lanysec.rbac.user.model.web.TeacherAssment" id="SelectResultMap" extends="BaseResultMap">
+        <!-- 关联对象 -->
+        <association property="teacher" javaType="com.lanysec.rbac.user.model.web.Course"
+        column="tea_id"
+        select="com.lanysec.rbac.user.dao.web.TeacherDao.getTeaInfoByTeaId"
+        ></association>
+          <association property="student" javaType="com.lanysec.rbac.user.model.web.Student"
+        column="stu_id"
+        select="com.lanysec.rbac.user.dao.web.StudentDao.getStuInfoById"
+        ></association>
+    </resultMap>
+  <select id="getTeaAssmentInfoByTeaId" resultMap="SelectResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      sys_teacher_assment
+  WHERE 
+      id=#{id}
+  </select>
+  
+    <select id="getStudentAssmentByStuId" resultMap="SelectResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      sys_teacher_assment
+  WHERE 
+      stu_id=#{stu_id}
+  Limit #{startNum},#{Page}
+  </select>
+      <select id="getTeacherAssmentByTeaId" resultMap="SelectResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      sys_teacher_assment
+  WHERE 
+      tea_id=#{tea_id}
+  Limit #{startNum},#{Page}
+  </select>
+  
+  <select id="getTeaAssmentInfoList" resultMap="SelectResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      sys_teacher_assment
+   Limit #{startNum},#{Page}
+  
+  </select>
+   <select id="checkExist" resultMap="SelectResultMap">
+  SELECT 
+      *
+  FROM 
+      sys_teacher_assment
+  WHERE 
+      stu_id=#{stu_id}
+  AND
+     tea_id=#{tea_id}
+  
+  </select>
+  <select  id="getTeacherAssmentCount" resultType="INTEGER">
+    SELECT 
+         count(*) 
+    FROM    
+         sys_teacher_assment
+  </select>
+  <delete id="deleteTeacherAssmentInfoById">
+  DELETE FROM
+          sys_teacher_assment
+  WHERE
+        id=#{id}        
+  
+  </delete>
+  <update id="modifyTeaAssmentInfoById">
+  UPDATE 
+      sys_teacher_assment
+  SET   
+      tea_id=#{teacherAssment.tea_id},
+      stu_id=#{teacherAssment.stu_id},
+      assment=#{teacherAssment.assment},
+      assment_status=#{teacherAssment.assment_status}
+  WHERE
+  id=#{teacherAssment.id}   
+  </update>
+  <insert id="addTeacherAssment">
+  INSERT INTO 
+       sys_teacher_assment
+      (tea_id,stu_id,assment,assment_status)
+  VALUES
+      (#{teacherAssment.tea_id},#{teacherAssment.stu_id},#{teacherAssment.assment},#{teacherAssment.assment_status})
+ 
+  </insert>
+</mapper>

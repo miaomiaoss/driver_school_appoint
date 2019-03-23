@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanysec.rbac.user.dao.web.CarDao">
+   <resultMap type="com.lanysec.rbac.user.model.web.Car" id="BaseResultMap">
+        <result property="car_owner" column="car_owner" jdbcType="VARCHAR"/>
+        <result property="car_id" column="car_id" jdbcType="VARCHAR"/>
+        <result property="car_type" column="car_type" jdbcType="VARCHAR"/>
+        <result property="car_status" column="car_status" jdbcType="VARCHAR"/>
+        <result property="startTime" column="startTime" jdbcType="VARCHAR"/>
+        <result property="endTime" column="endTime" jdbcType="VARCHAR"/>
+        <result property="car_age" column="car_age" jdbcType="INTEGER"/>
+  </resultMap>
+    <resultMap type="com.lanysec.rbac.user.model.web.Car" id="SelectResultMap" extends="BaseResultMap">
+        <!-- 关联对象 -->
+        <association property="teacher" javaType="com.lanysec.rbac.user.model.web.Teacher"
+        column="car_id"
+        select="com.lanysec.rbac.user.dao.web.TeacherDao.getTeaInfoByCarId"
+        ></association>
+    </resultMap>
+  <select id="getCarInfoById" resultMap="BaseResultMap">
+  
+  SELECT 
+       *
+  FROM 
+      car_info
+  WHERE 
+      car_id=#{car_id}
+  </select>
+  
+  
+    <select id="getCarInfoList" resultMap="BaseResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      car_info
+   Limit #{startNum},#{Page}
+  
+  </select>
+  <select id="getCarCount" resultType="INTEGER">
+  SELECT  
+    count(*)
+  FROM 
+    car_info
+  </select>
+  <delete id="deleteCarInfoById">
+  DELETE FROM 
+            car_info
+  WHERE
+       car_id=#{car_id}
+  
+  </delete>
+  <update id="modifyCarInfoById" >
+  UPDATE 
+    car_info
+  set
+     car_owner=#{car.car_owner}
+    ,car_type=#{car.car_type}
+    ,car_age=#{car.car_age} 
+    ,car_status=#{car_status}
+  WHERE
+   car_id=#{car.car_id} 
+  </update>
+    <update id="modifyCarTimeInfoById" >
+  UPDATE 
+    car_info
+  set
+     car_owner=#{car.car_owner}
+    ,car_type=#{car.car_type}
+    ,car_age=#{car.car_age} 
+    ,car_status=#{car.car_status}
+    ,startTime=#{car.startTime}
+    ,endTime=#{car.endTime}
+  WHERE
+   car_id=#{car.car_id} 
+  </update>
+  <insert id="addCar">
+  INSERT INTO
+       car_info
+   (car_id,car_owner,car_type,car_age,car_status,startTime,endTime)
+  VALUES
+  (#{car.car_id},#{car.car_owner},#{car.car_type},#{car.car_age},#{car.car_status},#{car.startTime},#{car.endTime})
+  </insert>
+</mapper>

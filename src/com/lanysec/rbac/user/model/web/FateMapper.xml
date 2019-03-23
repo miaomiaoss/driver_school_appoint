@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanysec.rbac.user.dao.web.FateDao">
+   <resultMap type="com.lanysec.rbac.user.model.web.Fate" id="BaseResultMap">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+         <result property="studentId" column="studentId" jdbcType="VARCHAR"/>
+         <result property="courseId" column="courseId" jdbcType="DOUBLE"/>
+        <result property="money" column="money" jdbcType="DOUBLE"/>
+        <result property="fateTime" column="fateTime" jdbcType="VARCHAR"/>
+        <result property="fateRemark" column="fateRemark" jdbcType="VARCHAR"/>
+  </resultMap>
+  <resultMap type="com.lanysec.rbac.user.model.web.Fate" id="SelectResultMap" extends="BaseResultMap">
+        <!-- 关联对象 -->
+        <association property="student" javaType="com.lanysec.rbac.user.model.web.Student"
+        column="studentId"
+        select="com.lanysec.rbac.user.dao.web.StudentDao.getStuInfoById"
+        ></association>
+          <association property="course" javaType="com.lanysec.rbac.user.model.web.Course"
+        column="courseId"
+        select="com.lanysec.rbac.user.dao.web.CourseDao.getCourseInfoById"
+        ></association>
+  </resultMap>
+  <select id="getFateListBStudentId" resultMap="SelectResultMap">
+  
+  SELECT 
+       *
+  FROM 
+      sys_fate
+  WHERE 
+      studentId=#{studentId}
+  </select>
+    <select id="getSignalFateId" resultMap="SelectResultMap">
+  
+  SELECT 
+       *
+  FROM 
+      sys_fate
+  WHERE 
+      id=#{id}
+  </select>
+  
+    <select id="getFateList" resultMap="SelectResultMap">
+  
+  SELECT 
+      *
+  FROM 
+     sys_fate
+   Limit #{startNum},#{Page}
+  
+  </select>
+  
+  <select id="getCount" resultType="INTEGER">
+  SELECT  
+    count(*)
+  FROM 
+    sys_fate
+  </select>
+  <delete id="deleteFateInfoById">
+  DELETE FROM 
+            sys_fate
+  WHERE
+       id=#{id}
+  
+  </delete>
+  <update id="modifyFateInfoById" >
+  UPDATE 
+    sys_fate
+  set
+     courseId=#{fate.courseId}
+    ,studentId=#{fate.studentId}
+    ,money=#{fate.money}
+    , fateTime=#{fate.fateTime}
+    ,fateRemark=#{fate.fateRemark}
+  WHERE
+   id=#{fate.id} 
+  </update>
+  <insert id="addFate">
+  INSERT INTO
+       sys_fate
+   (courseId,studentId,money,fateTime,fateRemark)
+  VALUES
+  (#{fate.courseId},#{fate.studentId},#{fate.money},#{fate.fateTime},#{fate.fateRemark})
+  </insert>
+</mapper>

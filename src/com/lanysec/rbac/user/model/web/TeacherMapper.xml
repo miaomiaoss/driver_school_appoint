@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanysec.rbac.user.dao.web.TeacherDao">
+   <resultMap type="com.lanysec.rbac.user.model.web.Teacher" id="BaseResultMap">
+        <result property="tea_id" column="tea_id" jdbcType="VARCHAR"/>
+        <result property="tea_name" column="tea_name" jdbcType="VARCHAR"/>
+        <result property="car_id" column="car_id" jdbcType="VARCHAR"/>
+  </resultMap>
+       <resultMap type="com.lanysec.rbac.user.model.web.Teacher" id="SelectResultMap" extends="BaseResultMap">
+        <!-- 关联对象 -->
+        <association property="car" javaType="com.lanysec.rbac.user.model.web.Car"
+        column="car_id"
+        select="com.lanysec.rbac.user.dao.web.CarDao.getCarInfoById"
+        ></association>
+    </resultMap>
+  <select id="getTeaInfoByTeaId" resultMap="SelectResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      teacher_info
+  WHERE 
+      tea_id=#{tea_id}
+  </select>
+    <select id="getTeaInfoByCarId" resultMap="SelectResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      teacher_info
+  WHERE 
+      car_id=#{car_id}
+  </select>
+  <select id="getTeaInfoList" resultMap="SelectResultMap">
+  
+  SELECT 
+      *
+  FROM 
+      teacher_info
+   Limit #{startNum},#{Page}
+  
+  </select>
+  <select  id="getTeacherCount" resultType="INTEGER">
+    SELECT 
+         count(*) 
+    FROM    
+         teacher_info
+  </select>
+  <delete id="deleteTeacherInfoById">
+  DELETE FROM
+          teacher_info
+  WHERE
+        tea_id=#{tea_id}        
+  
+  </delete>
+  <update id="modifyTeaInfoById">
+  UPDATE 
+      teacher_info
+  SET   
+  car_id=#{teacher.car_id},
+  tea_name=#{teacher.tea_name}
+  WHERE
+  tea_id=#{teacher.tea_id}   
+  </update>
+  <insert id="addTeacher">
+  INSERT INTO 
+       teacher_info
+      (tea_id,car_id,tea_name)
+  VALUES
+      (#{teacher.tea_id},#{teacher.car_id},#{teacher.tea_name})
+ 
+  </insert>
+</mapper>

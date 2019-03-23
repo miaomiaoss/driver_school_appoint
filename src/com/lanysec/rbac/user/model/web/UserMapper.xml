@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanysec.rbac.user.dao.web.UserDao">
+   <resultMap type="com.lanysec.rbac.user.model.web.User" id="BaseResultMap">
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+         <result property="userLimit" column="user_limit" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="user_columns_login">
+        user_id,account,password,user_limit
+    </sql>
+    <select id="login" resultMap="BaseResultMap">
+        SELECT 
+            <include refid="user_columns_login"/>
+        FROM 
+            sys_user 
+        WHERE account=#{account} and password=#{password}
+    </select>
+      
+    <select id="getUserInfoById" resultMap="BaseResultMap">
+        SELECT 
+            <include refid="user_columns_login"/>
+        FROM 
+            sys_user 
+        WHERE account=#{account}
+    </select>
+    
+    <update id="updateUserInfoById" >
+        UPDATE 
+            sys_user
+        SET  
+            account=#{user.account},
+            password=#{user.password},
+            user_limit=#{user.userLimit}
+        WHERE
+           user_id=#{user.userId}
+    </update>
+    <delete id="deleteUserInfoById" >
+        DELETE FROM
+            sys_user
+        WHERE
+           user_id=#{account}
+   </delete>
+      <delete id="deleteUserInfoByAccount">
+        DELETE FROM
+            sys_user
+        WHERE
+           account=#{account}
+   </delete>
+   <update id="modifyUserPass">
+   
+   UPDATE 
+      sys_user
+   SET
+      password=#{password}
+   WHERE
+       account=#{account}
+   
+   </update>
+   <insert id="addUser">
+     INSERT INTO 
+          sys_user
+      (account,password,user_limit)
+     VALUES
+     (#{user.account},#{user.password},#{user.userLimit})
+   
+   </insert>
+</mapper>
